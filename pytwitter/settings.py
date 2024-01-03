@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'auth_users.apps.AuthConfig',
     'posts.apps.PostsConfig',
     'profiles.apps.ProfilesConfig',
+    'commands.apps.CommandsConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,7 +101,7 @@ WSGI_APPLICATION = 'pytwitter.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DATABASE'),
+        'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('POSTGRES_HOST'),
