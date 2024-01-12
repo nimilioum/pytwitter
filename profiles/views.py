@@ -45,7 +45,7 @@ class ProfileViewSet(GenericViewSet,
     @action(detail=True, methods=['POST', ])
     def follow(self, request, user__username=None):
         profile = get_object_or_404(self.queryset, user__username=user__username)
-        current_profile = Profile.objects.all().get(user=request.user)
+        current_profile = Profile.objects.get(user=request.user)
 
         current_profile.follow(profile)
 

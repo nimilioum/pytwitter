@@ -30,5 +30,5 @@ class Profile(Model):
     def _unfollow(self, profile: "Profile"):
         self.follows.remove(profile)
 
-    def is_followed(self, user: User):
-        return Profile.objects.filter(follows=user.profile, id=self.id).exists()
+    def is_followed(self, profile: "Profile"):
+        return Profile.objects.filter(follows=profile, id=self.id).exists()

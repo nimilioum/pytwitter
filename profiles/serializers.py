@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Profile
 
 
-base_fields = ('username', 'avatar', 'bio')
+base_fields = ('username', 'avatar', 'bio', 'is_followed')
 
 
 class ProfileBaseSerializer(ModelSerializer):
@@ -17,7 +17,8 @@ class ProfileBaseSerializer(ModelSerializer):
         return obj.user.username
 
     def get_is_followed(self, obj):
-        return obj.is_followed(self.context.get('user'))
+        current_profile = Profile.objects.get(user=self.context.get('user'))
+        return current_profile.is_followed(obj)
 
 
 class ProfileListSerializer(ProfileBaseSerializer):
