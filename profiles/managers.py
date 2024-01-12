@@ -6,6 +6,12 @@ User = get_user_model()
 
 class ProfileManager(models.Manager):
 
+    # def all(self):
+    #     super(ProfileManager, self).all().select_related('user').annotate(
+    #         follows_count=models.Count('follows'),
+    #         follower_count=models.Count('followed_by'),
+    #     )
+
     def get_queryset(self):
         return super(ProfileManager, self).get_queryset().select_related('user').annotate(
             follows_count=models.Count('follows'),

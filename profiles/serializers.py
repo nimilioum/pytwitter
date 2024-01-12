@@ -34,7 +34,7 @@ class ProfileDetailSerializer(ProfileBaseSerializer):
         fields = base_fields + ('followings', 'followers', )
 
     followings = serializers.IntegerField(source='follows_count', read_only=True)
-    followers = serializers.IntegerField(source='followed_by_count', read_only=True)
+    followers = serializers.IntegerField(source='follower_count', read_only=True)
 
 
 class ProfileUpdateSerializer(ProfileBaseSerializer):

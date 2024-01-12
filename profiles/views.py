@@ -45,14 +45,11 @@ class ProfileViewSet(GenericViewSet,
     @action(detail=True, methods=['POST', ])
     def follow(self, request, user__username=None):
         profile = get_object_or_404(self.queryset, user__username=user__username)
-        current_profile = Profile.objects.prefetch_related('follows').get(user=request.user)
-        follows = current_profile.follows.all()
-        if profile.id not in current_profile.follows.all():
-            current_profile.follow(profile)
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            current_profile.unfollow(profile)
-            return Response(status=status.HTTP_201_CREATED)
+        current_profile = Profile.objects.all().get(user=request.user)
+
+        current_profile.follow(profile)
+
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['POST', ], url_name='avatar', url_path='avatar',
             parser_classes=[MultiPartParser])
