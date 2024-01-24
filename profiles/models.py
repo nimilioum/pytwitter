@@ -15,7 +15,6 @@ class Profile(Model):
 
     def follow(self, profile: "Profile"):
         follows = self.follows.all()
-        print(len(follows))
         if profile not in follows:
             self._follow(profile)
         else:

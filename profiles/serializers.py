@@ -12,13 +12,16 @@ class ProfileBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Profile
+        fields = base_fields
 
-    def get_username(self, obj):
+    def get_username(self, obj) -> str:
         return obj.user.username
 
     def get_is_followed(self, obj):
-        current_profile = Profile.objects.get(user=self.context.get('user'))
-        return current_profile.is_followed(obj)
+        if user := self.context.get('user'):
+            current_profile = Profile.objects.get(user=user)
+            return current_profile.is_followed(obj)
+        return False
 
 
 class ProfileListSerializer(ProfileBaseSerializer):
@@ -39,7 +42,6 @@ class ProfileDetailSerializer(ProfileBaseSerializer):
 
 
 class ProfileUpdateSerializer(ProfileBaseSerializer):
-
     username = serializers.CharField(source='user.username', read_only=False)
 
     class Meta:
