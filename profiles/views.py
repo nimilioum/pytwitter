@@ -2,22 +2,18 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, UpdateModelMixin
+from rest_framework.parsers import MultiPartParser
+from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import SearchFilter
 
+from utils import UserSerializerMixin
 from .models import Profile
 from .serializers import ProfileListSerializer, ProfileDetailSerializer, \
     ProfileUpdateSerializer, ProfileAvatarUpdateSerializer
 
 
-class ProfileViewSet(GenericViewSet,
-                     ListModelMixin,
-                     RetrieveModelMixin,
-                     UpdateModelMixin):
+class ProfileViewSet(ModelViewSet, UserSerializerMixin):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
     lookup_field = 'user__username'
@@ -39,11 +35,6 @@ class ProfileViewSet(GenericViewSet,
             return ProfileAvatarUpdateSerializer
 
         return super().get_serializer_class()
-
-    def get_serializer_context(self):
-        if self.request.user.is_authenticated:
-            return {'user': self.request.user}
-        return super().get_serializer_context()
 
     @action(detail=True, methods=['POST', ])
     def follow(self, request, user__username=None):
