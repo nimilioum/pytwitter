@@ -1,5 +1,5 @@
 from django.db import transaction
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from profiles.serializers import ProfileBaseSerializer
 from posts.models import Post, Upload
@@ -23,7 +23,8 @@ class CommentListSerializer(ModelSerializer):
         model = Post
         fields = '__all__'
 
-    def get_replies(self, obj):
+    @staticmethod
+    def get_replies(obj):
         return CommentListSerializer(obj).data
 
 
