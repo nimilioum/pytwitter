@@ -44,7 +44,7 @@ class PostCreateSerializer(PostBaseSerializer):
         child=serializers.FileField(max_length=100000,
                                     allow_empty_file=False,
                                     use_url=False,
-                                    required=False)
+                                    required=False), write_only=True, required=False,
     )
 
     class Meta:
@@ -54,12 +54,17 @@ class PostCreateSerializer(PostBaseSerializer):
     @transaction.atomic
     def create(self, validated_data):
         user = self.context.get('user')
-        post = Post.objects.create(user=user, **validated_data)
+        # post = Post.objects.create(user=user, **validated_data)
 
         if 'files' in validated_data:
             files = validated_data.pop('files')
+            post = Post.objects.create(user=user, **validated_data)
+            files_create = []
             for file in files:
-                Upload.objects.create(post=post, file=file)
+                files_create.append(Upload(post=post, file=file))
+            Upload.objects.bulk_create(files_create)
+        else:
+            post = Post.objects.create(user=user, **validated_data)
         return post
 
 
@@ -68,7 +73,7 @@ class PostUpdateSerializer(PostBaseSerializer):
         child=serializers.FileField(max_length=100000,
                                     allow_empty_file=False,
                                     use_url=False,
-                                    required=False)
+                                    required=False), write_only=True, required=False,
     )
 
     files_remove = serializers.ListField(child=serializers.IntegerField())

@@ -19,6 +19,11 @@ class PostVIewSet(ModelViewSet, UserSerializerMixin):
     serializer_class = PostListSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_serializer_context(self):
+        if self.request.user.is_authenticated:
+            return {'user': self.request.user}
+        return super().get_serializer_context()
+
     def get_serializer_class(self):
         if self.action == 'create':
             return PostCreateSerializer

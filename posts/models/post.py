@@ -1,6 +1,7 @@
 from django.db import models, IntegrityError
 
 from posts.managers import PostManager
+from .hashtag import Hashtag
 from utils import DomainException
 from utils.models import Model
 from django.contrib.auth import get_user_model
@@ -14,6 +15,8 @@ class Post(Model):
     retweets = models.ManyToManyField(User, related_name='retweets')
     likes = models.ManyToManyField(User, related_name='liked_posts')
     saves = models.ManyToManyField(User, related_name='saved_posts')
+    hashtags = models.ManyToManyField(Hashtag, related_name='posts')
+    mentions = models.ManyToManyField(User, related_name='mentions')
 
     post = models.ForeignKey('self', related_name='comments', on_delete=models.CASCADE, null=True)
     reply_to = models.ForeignKey('self', related_name='replies', on_delete=models.CASCADE, null=True)
@@ -70,5 +73,5 @@ class Post(Model):
 
 
 class Upload(Model):
-    file = models.FileField()
+    file = models.FileField(upload_to='files/')
     post = models.ForeignKey(Post, related_name='files', on_delete=models.CASCADE)
