@@ -4,7 +4,7 @@ from rest_framework import serializers
 from profiles.serializers import ProfileBaseSerializer
 from posts.models import Post, Upload
 
-post_fields = ('user', 'caption', 'files', 'likes', 'retweets', 'reply_to')
+post_fields = ('id', 'user', 'caption', 'files', 'likes', 'retweets', 'reply_to', 'mentions', 'hashtags')
 
 
 class UploadListSerializer(ModelSerializer):
@@ -17,15 +17,15 @@ class UploadListSerializer(ModelSerializer):
 
 class CommentListSerializer(ModelSerializer):
     user = ProfileBaseSerializer()
-    replies = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = post_fields + ('comments',)
 
     @staticmethod
-    def get_replies(obj):
-        return CommentListSerializer(obj).data
+    def get_comments(obj):
+        return CommentListSerializer(obj.comments_view, many=True).data
 
 
 class PostBaseSerializer(ModelSerializer):
@@ -36,7 +36,7 @@ class PostBaseSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = post_fields
 
 
 class PostCreateSerializer(PostBaseSerializer):
@@ -49,12 +49,11 @@ class PostCreateSerializer(PostBaseSerializer):
 
     class Meta:
         model = Post
-        fields = ('caption', 'reply_to', 'files')
+        fields = ('id', 'caption', 'reply_to', 'files')
 
     @transaction.atomic
     def create(self, validated_data):
         user = self.context.get('user')
-        # post = Post.objects.create(user=user, **validated_data)
 
         if 'files' in validated_data:
             files = validated_data.pop('files')
@@ -80,7 +79,7 @@ class PostUpdateSerializer(PostBaseSerializer):
 
     class Meta:
         model = Post
-        fields = ('caption', 'files_add', 'files_remove')
+        fields = ('id', 'caption', 'files_add', 'files_remove')
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -106,8 +105,11 @@ class PostListSerializer(PostBaseSerializer):
 
 
 class PostDetailSerializer(PostBaseSerializer):
-    comments = CommentListSerializer()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = post_fields + ('comments',)
+
+    def get_comments(self, obj):
+        return CommentListSerializer(obj.comments_view, many=True).data

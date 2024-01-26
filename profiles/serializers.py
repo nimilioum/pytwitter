@@ -15,12 +15,12 @@ class ProfileBaseSerializer(ModelSerializer):
         fields = base_fields
 
     def get_username(self, obj) -> str:
-        return obj.user.username
+        return obj.username
 
     def get_is_followed(self, obj):
         if user := self.context.get('user'):
             current_profile = Profile.objects.get(user=user)
-            return current_profile.is_followed(obj)
+            return current_profile.is_followed(current_profile)
         return False
 
 

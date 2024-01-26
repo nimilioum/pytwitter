@@ -12,11 +12,14 @@ User = get_user_model()
 class Post(Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweets')
     caption = models.TextField(max_length=1000)
+
     retweets = models.ManyToManyField(User, related_name='retweets')
     likes = models.ManyToManyField(User, related_name='liked_posts')
     saves = models.ManyToManyField(User, related_name='saved_posts')
+
     hashtags = models.ManyToManyField(Hashtag, related_name='posts')
     mentions = models.ManyToManyField(User, related_name='mentions')
+    reports = models.ManyToManyField(User, related_name='reports', through='Report')
 
     post = models.ForeignKey('self', related_name='comments', on_delete=models.CASCADE, null=True)
     reply_to = models.ForeignKey('self', related_name='replies', on_delete=models.CASCADE, null=True)

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework',
     'rest_framework_tricks',
+    'rest_framework_recursive',
     'rest_framework.authtoken',
     'django_filters',
     'corsheaders',

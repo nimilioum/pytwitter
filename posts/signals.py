@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from packaging.tags import Tag
 
@@ -30,3 +30,13 @@ def create_mentions(sender, instance, created, **kwargs):
         users_exist = User.objects.filter(username__in=mentions)
 
         instance.mentions.add(*users_exist)
+
+
+@receiver(pre_save, sender=Post)
+def parent_post(sender, instance: Post, **kwargs):
+    if instance.reply_to is not None:
+        parent = instance.reply_to
+        if parent.post is not None:
+            instance.post = parent.post
+        else:
+            instance.post = instance.reply_to
