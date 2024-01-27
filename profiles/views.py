@@ -1,19 +1,19 @@
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
-from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
-from utils import UserSerializerMixin
+from utils import GenericViewSetWithContext
 from .models import Profile
 from .serializers import ProfileListSerializer, ProfileDetailSerializer, \
     ProfileUpdateSerializer, ProfileAvatarUpdateSerializer
 
 
-class ProfileViewSet(ModelViewSet, UserSerializerMixin):
+class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
     lookup_field = 'user__username'

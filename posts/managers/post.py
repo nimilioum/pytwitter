@@ -7,9 +7,12 @@ User = get_user_model()
 
 class PostManager(models.Manager):
 
+    def get(self, *args, **kwargs):
+        return super(PostManager, self).get(*args, **kwargs).prefetch_related('comments')
+
     def get_queryset(self):
         return (super(PostManager, self).get_queryset().prefetch_related('user', 'user__profile',
-                                                                         'files', 'comments', 'hashtags', 'mentions')
+                                                                         'files', 'hashtags', 'mentions')
                 .annotate(
             likes_count=models.Count('likes'),
             retweets_count=models.Count('retweets'),
@@ -19,5 +22,11 @@ class PostManager(models.Manager):
         return self.filter(likes=user)
 
     def get_user_retweets(self, user: User):
-        return self.filter(followed_by=user.profile)
+        return self.filter(retweets=user)
+
+    def get_user_tweets(self, user: User):
+        return self.filter(user=user, reply_to=None)
+
+    def get_user_tweets_replies(self, user: User):
+        return self.filter(user=user)
 

@@ -1,10 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostVIewSet, PostUserVIewSet
+from posts.views import HashtagViewSet
 
 router = DefaultRouter()
-router.register('', PostVIewSet, basename='posts')
-router.register('user', PostUserVIewSet, basename='user_posts')
+router.register('', HashtagViewSet, basename='hashtags')
 
 urlpatterns = [
     path('', include(router.urls)),

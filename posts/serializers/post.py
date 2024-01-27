@@ -33,6 +33,10 @@ class PostBaseSerializer(ModelSerializer):
     likes = serializers.IntegerField(source='likes_count', read_only=True)
     retweets = serializers.IntegerField(source='retweets_count', read_only=True)
     files = UploadListSerializer(many=True, read_only=True)
+    hashtags = serializers.HyperlinkedRelatedField(view_name='hashtags-posts', read_only=True,
+                                                   many=True, lookup_field='name')
+    mentions = serializers.HyperlinkedRelatedField(view_name='profiles-detail', many=True, read_only=True,
+                                                      lookup_field='username')
 
     class Meta:
         model = Post

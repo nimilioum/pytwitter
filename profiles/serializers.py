@@ -15,7 +15,9 @@ class ProfileBaseSerializer(ModelSerializer):
         fields = base_fields
 
     def get_username(self, obj) -> str:
-        return obj.username
+        if hasattr(obj, 'username'):
+            return obj.username
+        return obj.user.username
 
     def get_is_followed(self, obj):
         if user := self.context.get('user'):
