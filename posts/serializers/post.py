@@ -4,7 +4,7 @@ from rest_framework import serializers
 from profiles.serializers import ProfileBaseSerializer
 from posts.models import Post, Upload
 
-post_fields = ('id', 'user', 'caption', 'files', 'likes', 'retweets', 'reply_to', 'mentions', 'hashtags')
+post_fields = ('id', 'user', 'caption', 'files', 'likes', 'retweets', 'reply_to', 'mentions', 'hashtags', 'created_at')
 
 
 class UploadListSerializer(ModelSerializer):

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Profile
 
 
-base_fields = ('username', 'avatar', 'bio', 'is_followed')
+base_fields = ('username', 'avatar', 'bio', 'is_followed', 'created_at')
 
 
 class ProfileBaseSerializer(ModelSerializer):
