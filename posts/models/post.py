@@ -27,19 +27,21 @@ class Post(Model):
     objects = PostManager()
 
     def retweet(self, user: User):
-        if user in self.retweets.all():
+        if user not in self.retweets.all():
             self._retweet(user)
         else:
             self._unretweet(user)
 
     def like(self, user: User):
-        if user in self.likes.all():
+        a = self.likes.all()
+        b = user in a
+        if user not in self.likes.all():
             self._like(user)
         else:
             self._unlike(user)
 
     def save_post(self, user: User):
-        if user in self.saves.all():
+        if user not in self.saves.all():
             self._save(user)
         else:
             self._unsave(user)

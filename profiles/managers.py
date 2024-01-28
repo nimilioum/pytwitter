@@ -13,8 +13,8 @@ class ProfileManager(models.Manager):
         )
 
     def get_user_followings(self, user: User):
-        return self.filter(follows=user.profile)
+        return self.filter(followed_by=user.profile)
 
     def get_user_followers(self, user: User):
-        return self.filter(followed_by=user.profile)
+        return self.filter(follows=user.profile)
 

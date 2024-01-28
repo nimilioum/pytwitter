@@ -58,6 +58,20 @@ class PostVIewSet(ModelViewSetWithContext):
         serializer = self.get_serializer(post)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['GET', ])
+    def feed(self, request, *args, **kwargs):
+        user = request.user
+        followings = [i.user for i in Profile.objects.get_user_followings(user)]
+
+        following_posts = Post.objects.filter(user__in=followings)
+        following_likes = Post.objects.filter(likes__in=followings)
+
+        feed = (following_posts | following_likes).all().distinct()
+
+        serializer = self.get_serializer(feed, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['POST', ])
     def retweet(self, request, pk=None):
         post = get_object_or_404(self.queryset, pk=pk)

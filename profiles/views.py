@@ -37,8 +37,8 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
         return super().get_serializer_class()
 
     @action(detail=True, methods=['POST', ])
-    def follow(self, request, user__username=None):
-        profile = get_object_or_404(self.queryset, user__username=user__username)
+    def follow(self, request, username=None):
+        profile = get_object_or_404(self.queryset, user__username=username)
         current_profile = Profile.objects.get(user=request.user)
 
         current_profile.follow(profile)
@@ -47,8 +47,8 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
 
     @action(detail=True, methods=['POST', ], url_name='avatar', url_path='avatar',
             parser_classes=[MultiPartParser])
-    def update_avatar(self, request, user__username=None):
-        profile = get_object_or_404(self.queryset, user__username=user__username)
+    def update_avatar(self, request, username=None):
+        profile = get_object_or_404(self.queryset, user__username=username)
         serializer = ProfileAvatarUpdateSerializer(profile, data=request.data)
 
         if serializer.is_valid():
