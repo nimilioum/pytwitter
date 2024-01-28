@@ -4,7 +4,8 @@ from posts.models import Hashtag
 
 
 class HashtagSerializer(serializers.ModelSerializer):
+    posts = serializers.IntegerField(source='post_count', read_only=True)
 
     class Meta:
         model = Hashtag
-        fields = '__all__'
+        fields = ('name', 'posts')

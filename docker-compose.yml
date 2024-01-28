@@ -6,7 +6,7 @@ services:
       context: .
     image: "pytwitter:latest"
     ports:
-      - "8000:8000"
+      - "80:8000"
     volumes:
       - ./:/app
     command: >

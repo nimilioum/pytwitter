@@ -1,5 +1,7 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -12,6 +14,8 @@ from utils.views import GenericViewSetWithContext
 class HashtagViewSet(GenericViewSetWithContext):
     queryset = Hashtag.objects.all()
     serializer_class = HashtagSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name']
     lookup_field = 'name'
 
     def get_serializer_class(self):
