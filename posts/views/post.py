@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
+from auth_users.permissions import IsNotSuspendedOrReadOnly
 from posts.models import Post
 from posts.serializers import PostListSerializer, PostDetailSerializer, PostCreateSerializer, PostUpdateSerializer
 from posts.serializers.report import ReportSerializer
@@ -19,7 +20,7 @@ class PostVIewSet(ModelViewSetWithContext):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotSuspendedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['caption']
     pagination_class = PageNumberPagination
@@ -121,31 +122,40 @@ class PostVIewSet(ModelViewSetWithContext):
 class PostUserVIewSet(GenericViewSetWithContext):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotSuspendedOrReadOnly]
     pagination_class = PageNumberPagination
+    lookup_field = 'user__username'
+    lookup_url_kwarg = 'username'
 
-    def list(self, request, *args, **kwargs):
-        posts = Post.objects.get_user_tweets(request.user)
+    # def list(self, request, *args, **kwargs):
+    #     posts = Post.objects.get_user_tweets(request.user)
+    #     serializer = self.get_serializer(posts, many=True)
+    #
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get', ], url_path='posts', url_name='posts')
+    def user_posts(self, request, username=None):
+        posts = Post.objects.get_user_tweets(username)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=['GET', ], url_path='posts-replies', detail=False, pagination_class=PageNumberPagination)
-    def user_tweets_replies(self, request, *args, **kwargs):
+    def user_tweets_replies(self, request, username=None, *args, **kwargs):
         posts = Post.objects.get_user_tweets_replies(request.user)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=['GET', ], url_path='retweet-posts', detail=False, pagination_class=PageNumberPagination)
-    def user_retweets(self, request, *args, **kwargs):
+    def user_retweets(self, request, username=None, *args, **kwargs):
         posts = Post.objects.get_user_retweets(request.user)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=['GET', ], url_path='likes', detail=False, pagination_class=PageNumberPagination)
-    def user_liked_posts(self, request, *args, **kwargs):
+    def user_liked_posts(self, request, username=None, *args, **kwargs):
         posts = Post.objects.get_user_likes(request.user)
         serializer = self.get_serializer(posts, many=True)
 

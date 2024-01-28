@@ -12,9 +12,10 @@ urlpatterns = [
     path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
-    path('api/user/', include('posts.urls.user')),
+    path('api/user/', include('profiles.urls')),
     path('api/auth/', include('auth_users.urls')),
     path('api/posts/', include('posts.urls.post')),
+    path('api/user-posts/', include('posts.urls.user_posts')),
     path('api/hashtags/', include('posts.urls.hashtag'))
 ]
 

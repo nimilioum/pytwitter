@@ -2,11 +2,13 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
+from auth_users.permissions import IsNotSuspendedOrReadOnly
 from utils import GenericViewSetWithContext
 from .models import Profile
 from .serializers import ProfileListSerializer, ProfileDetailSerializer, \
@@ -20,6 +22,7 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
     lookup_url_kwarg = 'username'
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['user__username']
+    permission_classes = [IsAuthenticated, IsNotSuspendedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ['follow']:

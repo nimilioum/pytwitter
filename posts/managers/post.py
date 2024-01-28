@@ -21,12 +21,12 @@ class PostManager(models.Manager):
     def get_user_likes(self, user: User):
         return self.filter(likes=user)
 
-    def get_user_retweets(self, user: User):
-        return self.filter(retweets=user)
+    def get_user_retweets(self, username: str):
+        return self.filter(retweets=username)
 
-    def get_user_tweets(self, user: User):
-        return self.filter(user=user, reply_to=None)
+    def get_user_tweets(self, username: str):
+        return self.filter(user__username=username, reply_to=None)
 
-    def get_user_tweets_replies(self, user: User):
-        return self.filter(user=user)
+    def get_user_tweets_replies(self, username: str):
+        return self.filter(user=username)
 

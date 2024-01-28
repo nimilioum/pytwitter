@@ -10,7 +10,7 @@ class Profile(Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
     bio = models.TextField(max_length=500, null=True, blank=True)
-    avatar = models.ImageField(upload_to='images/avatars', null=True, blank=True, default='images/default_profile.png')
+    avatar = models.ImageField(upload_to='images/avatars', null=True, blank=True, default='/static/default_profile.png')
     objects = ProfileManager()
 
     def follow(self, profile: "Profile"):
