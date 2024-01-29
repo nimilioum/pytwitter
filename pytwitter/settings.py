@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
+    'storages',
 
     'auth_users.apps.AuthConfig',
     'posts.apps.PostsConfig',
@@ -177,13 +178,21 @@ USE_I18N = True
 
 USE_TZ = True
 
+STORAGES = {
+    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    'staticfiles': {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+}
+AWS_S3_ENDPOINT_URL = os.getenv("LIARA_ENDPOINT")
+AWS_S3_ACCESS_KEY_ID = os.getenv("LIARA_ACCESS_KEY")
+AWS_S3_SECRET_ACCESS_KEY = os.getenv("LIARA_SECRET_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("LIARA_BUCKET_NAME")
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_files')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
