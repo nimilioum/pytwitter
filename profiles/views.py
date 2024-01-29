@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -15,7 +15,7 @@ from .serializers import ProfileListSerializer, ProfileDetailSerializer, \
     ProfileUpdateSerializer, ProfileAvatarUpdateSerializer
 
 
-class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
+class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMixin):
     queryset = Profile.objects.all()
     serializer_class = ProfileListSerializer
     lookup_field = 'user__username'
@@ -28,14 +28,8 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
         if self.action in ['follow']:
             return None
 
-        if self.action == 'update':
-            return ProfileUpdateSerializer
-
         if self.action == 'retrieve':
             return ProfileDetailSerializer
-
-        if self.action == 'update_avatar':
-            return ProfileAvatarUpdateSerializer
 
         return super().get_serializer_class()
 
@@ -48,10 +42,29 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
 
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['POST', ], url_name='avatar', url_path='avatar',
+
+class ProfileUpdateViewSet(GenericViewSetWithContext, UpdateModelMixin):
+
+    serializer_class = ProfileUpdateSerializer
+    queryset = Profile.objects.all()
+
+    def get_serializer_class(self):
+
+        if self.action == 'update':
+            return ProfileUpdateSerializer
+
+        if self.action == 'update_avatar':
+            return ProfileAvatarUpdateSerializer
+
+        return super().get_serializer_class()
+
+    def get_object(self):
+        return self.request.user.profile
+
+    @action(detail=False, methods=['POST', ], url_name='avatar', url_path='avatar',
             parser_classes=[MultiPartParser])
-    def update_avatar(self, request, username=None):
-        profile = get_object_or_404(self.queryset, user__username=username)
+    def update_avatar(self, request):
+        profile = Profile.objects.get(user=request.user)
         serializer = ProfileAvatarUpdateSerializer(profile, data=request.data)
 
         if serializer.is_valid():

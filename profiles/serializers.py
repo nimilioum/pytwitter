@@ -49,6 +49,7 @@ class ProfileUpdateSerializer(ProfileBaseSerializer):
     class Meta:
         model = Profile
         fields = base_fields
+        read_only_fields = ('avatar', )
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
