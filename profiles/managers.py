@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import F
 
 User = get_user_model()
 
@@ -10,6 +11,8 @@ class ProfileManager(models.Manager):
         return super(ProfileManager, self).get_queryset().select_related('user').annotate(
             follows_count=models.Count('follows'),
             follower_count=models.Count('followed_by'),
+            # tweets=F('tweets'),
+            # posts_count=models.Count('tweets', distinct=True),
         )
 
     def get_user_followings(self, user: User):
