@@ -26,6 +26,12 @@ class Post(Model):
 
     objects = PostManager()
 
+    def is_liked(self, user: User):
+        return self.likes.filter(id=user.id).exists()
+
+    def is_retweeted(self, user: User):
+        return self.retweets.filter(id=user.id).exists()
+
     def retweet(self, user: User):
         if user not in self.retweets.all():
             self._retweet(user)

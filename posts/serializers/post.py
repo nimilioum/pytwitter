@@ -39,6 +39,8 @@ class PostBaseSerializer(ModelSerializer):
     mentions = serializers.HyperlinkedRelatedField(view_name='profiles-detail', many=True, read_only=True,
                                                       lookup_field='username')
     replies_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_retweeted = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -46,6 +48,12 @@ class PostBaseSerializer(ModelSerializer):
 
     def get_replies_count(self, obj):
         return obj.replies_count
+
+    def get_is_liked(self, obj):
+        return obj.is_liked(self.context.get('user'))
+
+    def get_is_retweeted(self, obj):
+        return obj.is_retweeted(self.context.get('user'))
 
 
 class PostCreateSerializer(PostBaseSerializer):
@@ -110,7 +118,7 @@ class PostUpdateSerializer(PostBaseSerializer):
 class PostListSerializer(PostBaseSerializer):
     class Meta:
         model = Post
-        fields = post_fields + ('replies_count',)
+        fields = post_fields + ('replies_count', 'is_liked', 'is_retweeted')
 
 
 class PostDetailSerializer(PostBaseSerializer):
@@ -118,7 +126,7 @@ class PostDetailSerializer(PostBaseSerializer):
 
     class Meta:
         model = Post
-        fields = post_fields + ('comments', 'replies_count',)
+        fields = post_fields + ('comments', 'replies_count', 'is_liked', 'is_retweeted')
 
     def get_comments(self, obj):
         return CommentListSerializer(obj.comments_view, many=True).data
