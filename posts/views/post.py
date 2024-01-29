@@ -141,23 +141,23 @@ class PostUserVIewSet(GenericViewSetWithContext):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['GET', ], url_path='posts-replies', detail=False, pagination_class=PageNumberPagination)
+    @action(methods=['GET', ], url_path='posts-replies', detail=True, pagination_class=PageNumberPagination)
     def user_tweets_replies(self, request, username=None, *args, **kwargs):
-        posts = Post.objects.get_user_tweets_replies(request.user)
+        posts = Post.objects.get_user_tweets_replies(username)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['GET', ], url_path='retweet-posts', detail=False, pagination_class=PageNumberPagination)
+    @action(methods=['GET', ], url_path='retweet-posts', detail=True, pagination_class=PageNumberPagination)
     def user_retweets(self, request, username=None, *args, **kwargs):
-        posts = Post.objects.get_user_retweets(request.user)
+        posts = Post.objects.get_user_retweets(username)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['GET', ], url_path='likes', detail=False, pagination_class=PageNumberPagination)
+    @action(methods=['GET', ], url_path='likes', detail=True, pagination_class=PageNumberPagination)
     def user_liked_posts(self, request, username=None, *args, **kwargs):
-        posts = Post.objects.get_user_likes(request.user)
+        posts = Post.objects.get_user_likes(username)
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
