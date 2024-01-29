@@ -16,7 +16,7 @@ class PostManager(models.Manager):
                 .annotate(
             likes_count=models.Count('likes'),
             retweets_count=models.Count('retweets'),
-        ))
+        )).order_by('-created_at')
 
     def get_user_likes(self, user: User):
         return self.filter(likes=user)
@@ -29,4 +29,7 @@ class PostManager(models.Manager):
 
     def get_user_tweets_replies(self, username: str):
         return self.filter(user=username)
+
+    def get_user_bookmarks(self, user: User):
+        return self.filter(saves=user)
 

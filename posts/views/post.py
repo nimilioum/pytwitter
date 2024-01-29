@@ -162,3 +162,10 @@ class PostUserVIewSet(GenericViewSetWithContext):
         serializer = self.get_serializer(posts, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get', ], url_path='bookmarks', url_name='bookmarks')
+    def user_bookmarks(self, request):
+        posts = Post.objects.get_user_bookmarks(request.user)
+        serializer = self.get_serializer(posts, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
