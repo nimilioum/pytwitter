@@ -10,6 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from auth_users.permissions import IsNotSuspendedOrReadOnly
 from posts.models import Post
+from posts.permissions import IsOwner
 from posts.serializers import PostListSerializer, PostDetailSerializer, PostCreateSerializer, PostUpdateSerializer
 from posts.serializers.report import ReportSerializer
 from profiles.models import Profile
@@ -123,7 +124,7 @@ class PostVIewSet(ModelViewSetWithContext):
 class PostUserVIewSet(GenericViewSetWithContext):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated, IsNotSuspendedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsNotSuspendedOrReadOnly, IsOwner]
     pagination_class = PageNumberPagination
     lookup_field = 'user__username'
     lookup_url_kwarg = 'username'
