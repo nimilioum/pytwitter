@@ -1,6 +1,9 @@
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from .models import Profile
+
+User = get_user_model()
 
 
 base_fields = ('username', 'avatar', 'bio', 'is_followed', 'created_at')
@@ -22,6 +25,8 @@ class ProfileBaseSerializer(ModelSerializer):
     def get_is_followed(self, obj):
         if user := self.context.get('user'):
             current_profile = Profile.objects.get(user=user)
+            if type(obj) is User:
+                obj = user.profile
             return current_profile.is_followed(obj)
         return False
 
