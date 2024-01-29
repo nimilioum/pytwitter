@@ -1,0 +1,12 @@
+SECRET_KEY=secretkey
+POSTGRES_NAME=pytwitter
+POSTGRES_DB=pytwitter
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=twitter1234
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+DEBUG=false
+LIARA_ENDPOINT="https://storage.iran.liara.space"
+LIARA_BUCKET_NAME="pytwitters"
+LIARA_ACCESS_KEY="accesskey"
+LIARA_SECRET_KEY=secretkeyliara
