@@ -62,12 +62,13 @@ class PostVIewSet(ModelViewSetWithContext):
     @action(detail=False, methods=['GET', ])
     def feed(self, request, *args, **kwargs):
         user = request.user
-        followings = [i.user for i in Profile.objects.get_user_followings(user)]
-
-        following_posts = Post.objects.filter(user__in=followings)
-        following_likes = Post.objects.filter(likes__in=followings)
-
-        feed = (following_posts | following_likes).all().distinct()
+        # followings = [i.user for i in Profile.objects.get_user_followings(user)]
+        #
+        # following_posts = Post.objects.filter(user__in=followings)
+        # following_likes = Post.objects.filter(likes__in=followings)
+        #
+        # feed = (following_posts | following_likes).all().distinct()
+        feed = Post.objects.all().order_by('-created_at')[:20]
 
         serializer = self.get_serializer(feed, many=True)
 
