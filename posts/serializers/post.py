@@ -4,7 +4,8 @@ from rest_framework import serializers
 from profiles.serializers import ProfileBaseSerializer
 from posts.models import Post, Upload
 
-post_fields = ('id', 'user', 'caption', 'files', 'likes', 'retweets', 'reply_to', 'mentions', 'hashtags', 'created_at')
+post_fields = ('id', 'user', 'caption', 'files', 'likes', 'retweets', 'reply_to',
+               'mentions', 'hashtags', 'created_at')
 
 
 class UploadListSerializer(ModelSerializer):
@@ -37,10 +38,14 @@ class PostBaseSerializer(ModelSerializer):
                                                    many=True, lookup_field='name')
     mentions = serializers.HyperlinkedRelatedField(view_name='profiles-detail', many=True, read_only=True,
                                                       lookup_field='username')
+    replies_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = post_fields
+
+    def get_replies_count(self, obj):
+        return obj.replies_count
 
 
 class PostCreateSerializer(PostBaseSerializer):
@@ -105,7 +110,7 @@ class PostUpdateSerializer(PostBaseSerializer):
 class PostListSerializer(PostBaseSerializer):
     class Meta:
         model = Post
-        fields = post_fields
+        fields = post_fields + ('replies_count',)
 
 
 class PostDetailSerializer(PostBaseSerializer):
@@ -113,7 +118,7 @@ class PostDetailSerializer(PostBaseSerializer):
 
     class Meta:
         model = Post
-        fields = post_fields + ('comments',)
+        fields = post_fields + ('comments', 'replies_count',)
 
     def get_comments(self, obj):
         return CommentListSerializer(obj.comments_view, many=True).data
