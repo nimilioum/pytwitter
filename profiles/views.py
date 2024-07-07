@@ -42,16 +42,18 @@ class ProfileViewSet(GenericViewSetWithContext, ListModelMixin, RetrieveModelMix
 
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=['GET', ])
-    def followings(self, request):
-        followings = Profile.objects.get_user_followings(self.request.user)
+    @action(detail=True, methods=['GET', ])
+    def followings(self, request, username=None):
+        user = Profile.objects.get(user__username=username)
+        followings = Profile.objects.get_user_followings(user)
         serializer = self.get_serializer(followings, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['GET', ])
-    def followers(self, request):
-        followings = Profile.objects.get_user_followers(self.request.user)
+    @action(detail=True, methods=['GET', ])
+    def followers(self, request, username=None):
+        user = Profile.objects.get(user__username=username)
+        followings = Profile.objects.get_user_followers(user)
         serializer = self.get_serializer(followings, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
