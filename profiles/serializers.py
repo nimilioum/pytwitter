@@ -26,7 +26,7 @@ class ProfileBaseSerializer(ModelSerializer):
         if user := self.context.get('user'):
             current_profile = Profile.objects.get(user=user)
             if type(obj) is User:
-                obj = user.profile
+                obj = obj.profile
             return current_profile.is_followed(obj)
         return False
 
