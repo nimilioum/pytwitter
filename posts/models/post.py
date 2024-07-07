@@ -32,6 +32,9 @@ class Post(Model):
     def is_retweeted(self, user: User):
         return self.retweets.filter(id=user.id).exists()
 
+    def is_saved(self, user: User):
+        return self.saves.filter(id=user.id).exists()
+
     def retweet(self, user: User):
         if user not in self.retweets.all():
             self._retweet(user)

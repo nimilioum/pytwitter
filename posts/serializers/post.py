@@ -41,6 +41,7 @@ class PostBaseSerializer(ModelSerializer):
     replies_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     is_retweeted = serializers.SerializerMethodField()
+    is_bookmarked = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -54,6 +55,9 @@ class PostBaseSerializer(ModelSerializer):
 
     def get_is_retweeted(self, obj):
         return obj.is_retweeted(self.context.get('user'))
+
+    def get_is_bookmarked(self, obj):
+        return obj.is_saved(self.context.get('user'))
 
 
 class PostCreateSerializer(PostBaseSerializer):
@@ -118,7 +122,7 @@ class PostUpdateSerializer(PostBaseSerializer):
 class PostListSerializer(PostBaseSerializer):
     class Meta:
         model = Post
-        fields = post_fields + ('replies_count', 'is_liked', 'is_retweeted')
+        fields = post_fields + ('replies_count', 'is_liked', 'is_retweeted', 'is_bookmarked')
 
 
 class PostDetailSerializer(PostBaseSerializer):
@@ -126,7 +130,7 @@ class PostDetailSerializer(PostBaseSerializer):
 
     class Meta:
         model = Post
-        fields = post_fields + ('comments', 'replies_count', 'is_liked', 'is_retweeted')
+        fields = post_fields + ('comments', 'replies_count', 'is_liked', 'is_retweeted', 'is_bookmarked')
 
     def get_comments(self, obj):
         return CommentListSerializer(obj.comments_view, many=True).data
